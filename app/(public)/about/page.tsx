@@ -88,33 +88,21 @@ export default async function AboutPage() {
               deepen their spiritual growth, and build strong Christian character through
               discipline and service.
             </p>
-            <p className="text-sm text-charcoal/50">
+            {/* <p className="text-sm text-charcoal/50">
               [Company-specific history not yet configured — add when your local company was
               founded, its early members, and any milestones, through the admin dashboard.]
-            </p>
-          </div>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-8">
-          <div>
-            <h2 className="font-display text-2xl font-bold text-royal-900 mb-3">Vision</h2>
-            <p className="text-charcoal/70 leading-relaxed">
-              [Vision statement not yet configured — replace with your company&apos;s vision.]
-            </p>
-          </div>
-          <div>
-            <h2 className="font-display text-2xl font-bold text-royal-900 mb-3">Mission</h2>
-            <p className="text-charcoal/70 leading-relaxed">
-              Character development — raising youths to be born-again disciples of Christ and
-              good citizens.
-            </p>
+            </p> */}
           </div>
         </div>
 
         <div>
-          <SectionHeader title="Aims &amp; Objectives" align="left"
-            description="Seven objectives carry out the primary aim of character development." />
-          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6 -mt-4">
+          <SectionHeader title="Aims &amp; Objectives" align="left" />
+          <p className="text-charcoal/70 leading-relaxed -mt-4 mb-6">
+            The primary aim of the Royal Shepherds—the youth paramilitary movement of the Christ
+            Apostolic Church (CAC)—is Character development and making all youths &quot;born
+            again&quot; disciples of Christ and good citizens.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
             {OBJECTIVES.map((o, i) => (
               <div key={o.name} className="flex gap-4">
                 <span className="shrink-0 h-8 w-8 rounded-full bg-royal-50 text-royal-700 font-display font-bold text-sm flex items-center justify-center">
