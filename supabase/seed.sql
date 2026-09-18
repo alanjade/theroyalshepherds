@@ -31,13 +31,10 @@ insert into ranks (name, short_name, display_order) values
   ('[Demo Rank 2]', 'DR2', 2),
   ('[Demo Rank 3]', 'DR3', 3);
 
-insert into departments (name, description, display_order) values
-  ('Training', 'Demo department — training & development', 1),
-  ('Music', 'Demo department — music ministry', 2),
-  ('Welfare', 'Demo department — member welfare', 3),
-  ('Media', 'Demo department — media & publicity', 4),
-  ('Protocol', 'Demo department — protocol & ushering', 5),
-  ('Evangelism', 'Demo department — outreach & evangelism', 6);
+insert into units (name, description, display_order) values
+  ('1st Platoon', 'Demo unit — replace with your company''s actual unit/platoon structure', 1),
+  ('2nd Platoon', 'Demo unit — replace with your company''s actual unit/platoon structure', 2),
+  ('3rd Platoon', 'Demo unit — replace with your company''s actual unit/platoon structure', 3);
 
 insert into officer_positions (title, display_order) values
   ('Company Captain', 1),
@@ -47,7 +44,7 @@ insert into officer_positions (title, display_order) values
   ('Training Officer', 5);
 
 -- Demo members (fictional; placeholders only)
-insert into members (membership_number, full_name, status, public_profile, short_bio, joined_at, department_id, rank_id)
+insert into members (membership_number, full_name, status, public_profile, short_bio, joined_at, unit_id, rank_id)
 select
   'RS-' || to_char(now(),'YYYY') || '-' || lpad(gs::text, 4, '0'),
   '[Demo Member ' || gs || ']',
@@ -55,7 +52,7 @@ select
   (gs % 2 = 0),
   'Demo bio for seed member ' || gs || '. Replace with real member information.',
   current_date - (gs * 30 || ' days')::interval,
-  (select id from departments order by random() limit 1),
+  (select id from units order by random() limit 1),
   (select id from ranks order by random() limit 1)
 from generate_series(1, 8) as gs;
 

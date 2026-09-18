@@ -171,7 +171,28 @@ reordering, resource upload, CSV export buttons, email provider integration
 (the abstraction in `lib/email/index.ts` is ready — plug in Resend/Postmark/SES),
 scheduled news publication, bulk table actions.
 
-## 13. Security notes
+## 13. Email (Resend)
+
+Transactional emails — application received, application approved, event
+registration confirmed — go through `lib/email/index.ts`, which calls the
+[Resend](https://resend.com) API directly (no SDK dependency).
+
+1. Create a Resend account and verify a sending domain (or use their shared
+   test domain while developing — fine for local dev, not for production).
+2. Create an API key in Resend and set it as `EMAIL_PROVIDER_API_KEY`.
+3. Set `EMAIL_FROM_ADDRESS` to a verified sender, e.g.
+   `"The Royal Shepherds <no-reply@yourdomain.org>"`.
+
+If either variable is unset, `sendEmail()` no-ops and logs a warning instead
+of sending — safe default for local dev. A failed send never throws, so a
+Resend outage won't break an application submission or event registration;
+it's just logged to the console (wire that into `audit_logs` or an error
+tracker if you want visibility on delivery failures).
+
+To switch providers later (Postmark, SES, etc.), everything in the app calls
+`sendEmail()` — only `lib/email/index.ts` needs to change.
+
+## 14. Security notes
 
 - Every admin mutation goes through a Server Action that calls
   `requirePermission()`/`requireRole()` server-side — never trust a hidden
@@ -191,7 +212,7 @@ scheduled news publication, bulk table actions.
 - The application→member approval workflow runs as a single atomic
   `SECURITY DEFINER` Postgres function so it can't be partially applied.
 
-## 14. Known follow-ups
+## 15. Known follow-ups
 
 - `npx eslint .` currently fails in this sandbox due to an
   `eslint-config-next` / flat-config compatibility issue with this Next.js
@@ -206,7 +227,7 @@ scheduled news publication, bulk table actions.
   resets on redeploy — for real spam protection at scale, back it with a
   Supabase table or Redis (e.g. Upstash) keyed by IP.
 
-## 15. Project structure
+## 16. Project structure
 
 See the top-level `app/`, `components/`, `lib/`, `supabase/`, and `types/`
 directories — organized by the architecture in the original spec (public

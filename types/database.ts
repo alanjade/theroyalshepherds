@@ -38,15 +38,15 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["ranks"]["Row"]> & { name: string };
         Update: Partial<Database["public"]["Tables"]["ranks"]["Row"]>;
       };
-      departments: {
+      units: {
         Row: { id: string; name: string; description: string | null; display_order: number; active: boolean; created_at: string; updated_at: string };
-        Insert: Partial<Database["public"]["Tables"]["departments"]["Row"]> & { name: string };
-        Update: Partial<Database["public"]["Tables"]["departments"]["Row"]>;
+        Insert: Partial<Database["public"]["Tables"]["units"]["Row"]> & { name: string };
+        Update: Partial<Database["public"]["Tables"]["units"]["Row"]>;
       };
       members: {
         Row: {
           id: string; membership_number: string; full_name: string; photo_url: string | null;
-          rank_id: string | null; department_id: string | null; status: MemberStatus; public_profile: boolean;
+          rank_id: string | null; unit_id: string | null; status: MemberStatus; public_profile: boolean;
           short_bio: string | null; phone: string | null; email: string | null; date_of_birth: string | null;
           gender: string | null; address: string | null; church: string | null; guardian_name: string | null;
           guardian_phone: string | null; emergency_contact: string | null; private_notes: string | null;
@@ -148,7 +148,7 @@ export interface Database {
     };
     Views: {
       public_members: {
-        Row: { id: string; full_name: string; photo_url: string | null; rank_id: string | null; department_id: string | null; short_bio: string | null };
+        Row: { id: string; full_name: string; photo_url: string | null; rank_id: string | null; unit_id: string | null; short_bio: string | null };
       };
     };
     Functions: {

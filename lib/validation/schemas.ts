@@ -65,7 +65,7 @@ export const memberSchema = z.object({
   public_profile: z.boolean().default(false),
   short_bio: z.string().max(1000).optional().or(z.literal("")),
   rank_id: z.string().uuid().optional().nullable(),
-  department_id: z.string().uuid().optional().nullable(),
+  unit_id: z.string().uuid().optional().nullable(),
   phone: z.string().max(30).optional().or(z.literal("")),
   email: z.string().email().optional().or(z.literal("")),
   date_of_birth: z.string().optional().or(z.literal("")),

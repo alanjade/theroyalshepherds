@@ -10,8 +10,8 @@ const inputClass = "w-full rounded-lg border border-royal-200 px-3 py-2 text-sm"
 const labelClass = "block text-sm font-medium text-royal-900 mb-1";
 
 export function MemberFormDialog({
-  ranks, departments,
-}: { ranks: { id: string; name: string }[]; departments: { id: string; name: string }[] }) {
+  ranks, units,
+}: { ranks: { id: string; name: string }[]; units: { id: string; name: string }[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -50,10 +50,10 @@ export function MemberFormDialog({
               </select>
             </div>
             <div>
-              <label className={labelClass}>Department</label>
-              <select name="department_id" className={inputClass}>
+              <label className={labelClass}>Unit</label>
+              <select name="unit_id" className={inputClass}>
                 <option value="">—</option>
-                {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+                {units.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </div>
           </div>

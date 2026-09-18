@@ -6,14 +6,14 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 export default async function MemberDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const { data: member } = await supabase.from("members").select("*, ranks(name), departments(name)").eq("id", id).single();
+  const { data: member } = await supabase.from("members").select("*, ranks(name), units(name)").eq("id", id).single();
   if (!member) notFound();
 
   const rows: [string, React.ReactNode][] = [
     ["Membership Number", member.membership_number],
     ["Status", <StatusBadge key="s" status={member.status} />],
     ["Rank", (member as any).ranks?.name ?? "—"],
-    ["Department", (member as any).departments?.name ?? "—"],
+    ["Unit", (member as any).units?.name ?? "—"],
     ["Phone", member.phone ?? "—"],
     ["Email", member.email ?? "—"],
     ["Date of Birth", member.date_of_birth ?? "—"],

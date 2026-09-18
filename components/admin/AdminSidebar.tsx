@@ -13,7 +13,7 @@ const NAV = [
   { href: "/admin/members", label: "Members", icon: Users },
   { href: "/admin/officers", label: "Officers", icon: Star },
   { href: "/admin/ranks", label: "Ranks", icon: Shield },
-  { href: "/admin/departments", label: "Departments", icon: Building2 },
+  { href: "/admin/units", label: "Units", icon: Building2 },
   { href: "/admin/events", label: "Events", icon: Calendar },
   { href: "/admin/news", label: "News", icon: Newspaper },
   { href: "/admin/gallery", label: "Gallery", icon: Images },

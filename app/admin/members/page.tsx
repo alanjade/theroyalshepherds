@@ -20,15 +20,15 @@ export default async function AdminMembersPage({
   const showNew = sp.new === "1";
 
   const supabase = await createClient();
-  let query = supabase.from("members").select("*, ranks(name), departments(name)", { count: "exact" });
+  let query = supabase.from("members").select("*, ranks(name), units(name)", { count: "exact" });
   if (search) query = query.ilike("full_name", `%${search}%`);
   if (sp.status) query = query.eq("status", sp.status);
   query = query.order("created_at", { ascending: false }).range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   const { data: members, count } = await query;
 
-  const [{ data: ranks }, { data: departments }] = await Promise.all([
+  const [{ data: ranks }, { data: units }] = await Promise.all([
     supabase.from("ranks").select("id, name").order("display_order"),
-    supabase.from("departments").select("id, name").order("display_order"),
+    supabase.from("units").select("id, name").order("display_order"),
   ]);
 
   return (
@@ -60,7 +60,7 @@ export default async function AdminMembersPage({
             { header: "Name", render: (m: any) => <Link href={`/admin/members/${m.id}`} className="font-medium text-royal-900 hover:text-gold-600">{m.full_name}</Link> },
             { header: "Membership #", render: (m: any) => m.membership_number },
             { header: "Rank", render: (m: any) => m.ranks?.name ?? "—" },
-            { header: "Department", render: (m: any) => m.departments?.name ?? "—" },
+            { header: "Unit", render: (m: any) => m.units?.name ?? "—" },
             { header: "Status", render: (m: any) => <StatusBadge status={m.status} /> },
             { header: "Public Profile", render: (m: any) => m.public_profile ? "Yes" : "No" },
           ]}
@@ -74,7 +74,7 @@ export default async function AdminMembersPage({
         <Pagination page={page} pageSize={PAGE_SIZE} total={count ?? 0} basePath="/admin/members" searchParams={{ search, status: sp.status }} />
       </div>
 
-      {showNew && <MemberFormDialog ranks={ranks ?? []} departments={departments ?? []} />}
+      {showNew && <MemberFormDialog ranks={ranks ?? []} units={units ?? []} />}
     </RequireAdmin>
   );
 }

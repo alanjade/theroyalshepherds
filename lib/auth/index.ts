@@ -53,7 +53,7 @@ const PERMISSIONS: Record<string, Role> = {
   "members.archive": "admin",
   "officers.manage": "admin",
   "ranks.manage": "admin",
-  "departments.manage": "admin",
+  "units.manage": "admin",
   "events.manage": "editor",
   "news.manage": "editor",
   "gallery.manage": "editor",

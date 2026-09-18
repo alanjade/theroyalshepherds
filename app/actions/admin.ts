@@ -116,7 +116,7 @@ export async function createMember(formData: FormData): Promise<ActionResult> {
     ...parsed.data,
     membership_number: numberResult,
     rank_id: parsed.data.rank_id || null,
-    department_id: parsed.data.department_id || null,
+    unit_id: parsed.data.unit_id || null,
     date_of_birth: parsed.data.date_of_birth || null,
   }).select("id").single();
   if (error) return { success: false, error: "Could not create member." };
