@@ -322,11 +322,22 @@ export async function updateSiteSettings(formData: FormData): Promise<ActionResu
   const supabase = await createClient();
   const raw = Object.fromEntries(formData.entries());
 
+  const stats = [0, 1, 2, 3]
+    .map((i) => ({ label: (raw[`stat_label_${i}`] as string)?.trim(), value: (raw[`stat_value_${i}`] as string)?.trim() }))
+    .filter((s) => s.label && s.value);
+
   const homepage = {
-    hero_title: raw.hero_title, hero_subtitle: raw.hero_subtitle,
+    hero_title: raw.hero_title, hero_subtitle: raw.hero_subtitle, hero_image: raw.hero_image || undefined,
     cta_primary: raw.cta_primary, cta_secondary: raw.cta_secondary,
+    stats,
   };
-  const seo = { site_title: raw.seo_title, meta_description: raw.seo_description };
+  const keywords = ((raw.seo_keywords as string) ?? "")
+    .split(",").map((k) => k.trim()).filter(Boolean);
+
+  const seo = {
+    site_title: raw.seo_title, meta_description: raw.seo_description,
+    keywords, og_image: raw.seo_og_image || undefined,
+  };
 
   const { error } = await supabase.from("site_settings").update({
     company_name: raw.company_name, company_motto: raw.company_motto, company_description: raw.company_description,

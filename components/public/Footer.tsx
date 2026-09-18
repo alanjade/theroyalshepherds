@@ -3,6 +3,16 @@ import Image from "next/image";
 import { Facebook, Instagram, Youtube, Twitter, MessageCircle } from "lucide-react";
 import type { SiteSettings } from "@/lib/settings";
 
+// lucide-react has no TikTok brand icon, so it's inlined here to match the
+// stroke-based style of the others.
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M16.6 5.82c-.9-.98-1.4-2.26-1.4-3.57h-3.05v13.4a3.13 3.13 0 1 1-2.19-2.98V9.6a6.15 6.15 0 0 0-1-.08A6.17 6.17 0 1 0 15.15 15.7a6.13 6.13 0 0 0 .3-1.92V9.4a9.15 9.15 0 0 0 5.35 1.7V8.05a6.12 6.12 0 0 1-4.2-2.23z" />
+    </svg>
+  );
+}
+
 export function Footer({ settings }: { settings: SiteSettings }) {
   const year = new Date().getFullYear();
   const social = [
@@ -10,6 +20,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
     { href: settings.instagram_url, icon: Instagram, label: "Instagram" },
     { href: settings.youtube_url, icon: Youtube, label: "YouTube" },
     { href: settings.x_url, icon: Twitter, label: "X" },
+    { href: settings.tiktok_url, icon: TikTokIcon, label: "TikTok" },
   ].filter((s) => s.href);
 
   return (

@@ -4,8 +4,8 @@ import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
-  const seo = settings.seo as { site_title?: string; meta_description?: string; keywords?: string[] };
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const seo = settings.seo as { site_title?: string; meta_description?: string; keywords?: string[]; og_image?: string };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://theroyalshepherds.vercel.app";
 
   return {
     metadataBase: new URL(siteUrl),
@@ -17,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: seo.meta_description || settings.company_description,
       siteName: settings.company_name,
       type: "website",
+      images: seo.og_image ? [{ url: seo.og_image }] : undefined,
     },
   };
 }

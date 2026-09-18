@@ -52,9 +52,25 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
         <h2 className="font-semibold text-royal-900">Homepage</h2>
         <div><label className={labelClass}>Hero Title</label><input name="hero_title" defaultValue={homepage.hero_title ?? ""} className={inputClass} /></div>
         <div><label className={labelClass}>Hero Subtitle</label><textarea name="hero_subtitle" defaultValue={homepage.hero_subtitle ?? ""} rows={2} className={inputClass} /></div>
+        <div><label className={labelClass}>Hero Image URL</label><input name="hero_image" defaultValue={homepage.hero_image ?? ""} className={inputClass} placeholder="Leave blank for the default gradient background" /></div>
         <div className="grid grid-cols-2 gap-4">
           <div><label className={labelClass}>Primary CTA Label</label><input name="cta_primary" defaultValue={homepage.cta_primary ?? ""} className={inputClass} /></div>
           <div><label className={labelClass}>Secondary CTA Label</label><input name="cta_secondary" defaultValue={homepage.cta_secondary ?? ""} className={inputClass} /></div>
+        </div>
+        <div>
+          <label className={labelClass}>Stats Strip</label>
+          <p className="text-xs text-charcoal/50 mb-2">Shown as a row under the hero. Leave a row's label blank to omit it.</p>
+          <div className="space-y-2">
+            {[0, 1, 2, 3].map((i) => {
+              const s = (homepage.stats as unknown as { label: string; value: string }[] | undefined)?.[i];
+              return (
+                <div key={i} className="grid grid-cols-2 gap-4">
+                  <input name={`stat_value_${i}`} defaultValue={s?.value ?? ""} placeholder="Value (e.g. 500+)" className={inputClass} />
+                  <input name={`stat_label_${i}`} defaultValue={s?.label ?? ""} placeholder="Label (e.g. Members)" className={inputClass} />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -62,6 +78,12 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
         <h2 className="font-semibold text-royal-900">SEO</h2>
         <div><label className={labelClass}>Site Title</label><input name="seo_title" defaultValue={seo.site_title ?? ""} className={inputClass} /></div>
         <div><label className={labelClass}>Meta Description</label><textarea name="seo_description" defaultValue={seo.meta_description ?? ""} rows={2} className={inputClass} /></div>
+        <div>
+          <label className={labelClass}>Keywords</label>
+          <input name="seo_keywords" defaultValue={((seo as unknown as { keywords?: string[] }).keywords ?? []).join(", ")}
+            placeholder="Comma-separated, e.g. Royal Shepherds, CAC, youth" className={inputClass} />
+        </div>
+        <div><label className={labelClass}>Social Share Image (OG Image) URL</label><input name="seo_og_image" defaultValue={seo.og_image ?? ""} className={inputClass} placeholder="Shown as the preview image when the site is shared on social media" /></div>
       </section>
 
       {saved && <p className="text-sm text-emerald-700">Settings saved.</p>}

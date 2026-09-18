@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://theroyalshepherds.vercel.app";
   const supabase = await createClient();
 
   const staticRoutes = ["", "/about", "/leadership", "/members", "/events", "/news", "/gallery", "/membership", "/resources", "/contact", "/privacy", "/terms"]

@@ -26,13 +26,13 @@ export function Navbar({ settings }: { settings: SiteSettings }) {
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-royal-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-display font-bold text-royal-900">
+          <Link href="/" className="flex items-center gap-2 min-w-0 font-display font-bold text-royal-900">
             {settings.logo_url ? (
-              <Image src={settings.logo_url} alt={settings.company_name} width={36} height={36} className="rounded-full" />
+              <Image src={settings.logo_url} alt={settings.company_name} width={36} height={36} className="rounded-full shrink-0" />
             ) : (
-              <span className="h-9 w-9 rounded-full bg-royal-900 text-gold flex items-center justify-center text-sm font-bold">RS</span>
+              <span className="h-9 w-9 rounded-full bg-royal-900 text-gold flex items-center justify-center text-sm font-bold shrink-0">RS</span>
             )}
-            <span className="hidden sm:inline">{settings.company_name}</span>
+            <span className="truncate">{settings.company_name}</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-6">
