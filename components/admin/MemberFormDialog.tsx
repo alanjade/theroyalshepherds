@@ -61,6 +61,7 @@ export function MemberFormDialog({
             <div><label className={labelClass}>Phone</label><input name="phone" className={inputClass} /></div>
             <div><label className={labelClass}>Email</label><input name="email" type="email" className={inputClass} /></div>
           </div>
+          <div><label className={labelClass}>Occupation</label><input name="occupation" className={inputClass} /></div>
           <div><label className={labelClass}>Short Bio</label><textarea name="short_bio" rows={2} className={inputClass} /></div>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="public_profile" className="rounded" /> Show public profile on the website

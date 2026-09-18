@@ -64,6 +64,7 @@ export const memberSchema = z.object({
   status: z.enum(["active", "inactive", "suspended", "archived"]).default("active"),
   public_profile: z.boolean().default(false),
   short_bio: z.string().max(1000).optional().or(z.literal("")),
+  occupation: z.string().max(120).optional().or(z.literal("")),
   rank_id: z.string().uuid().optional().nullable(),
   unit_id: z.string().uuid().optional().nullable(),
   phone: z.string().max(30).optional().or(z.literal("")),

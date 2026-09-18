@@ -47,7 +47,7 @@ export interface Database {
         Row: {
           id: string; membership_number: string; full_name: string; photo_url: string | null;
           rank_id: string | null; unit_id: string | null; status: MemberStatus; public_profile: boolean;
-          short_bio: string | null; phone: string | null; email: string | null; date_of_birth: string | null;
+          short_bio: string | null; occupation: string | null; phone: string | null; email: string | null; date_of_birth: string | null;
           gender: string | null; address: string | null; church: string | null; guardian_name: string | null;
           guardian_phone: string | null; emergency_contact: string | null; private_notes: string | null;
           joined_at: string; created_at: string; updated_at: string;
@@ -148,7 +148,7 @@ export interface Database {
     };
     Views: {
       public_members: {
-        Row: { id: string; full_name: string; photo_url: string | null; rank_id: string | null; unit_id: string | null; short_bio: string | null };
+        Row: { id: string; full_name: string; photo_url: string | null; rank_id: string | null; unit_id: string | null; short_bio: string | null; occupation: string | null };
       };
     };
     Functions: {

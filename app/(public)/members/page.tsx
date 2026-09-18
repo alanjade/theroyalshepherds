@@ -11,7 +11,9 @@ export const metadata: Metadata = { title: "Members" };
 // the public_members view + RLS, never a raw `members` select.
 export default async function MembersPage() {
   const supabase = await createClient();
-  const { data: members } = await supabase.from("public_members").select("*, ranks(name), units(name)");
+  const { data: members } = await supabase
+    .from("public_members")
+    .select("id, full_name, photo_url, short_bio, occupation, ranks(name), units(name)");
 
   return (
     <div className="py-20">
@@ -22,7 +24,7 @@ export default async function MembersPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
             {members.map((m: any) => (
               <OfficerCard key={m.id} name={m.full_name} position={m.units?.name ?? "Member"}
-                rank={m.ranks?.name} photoUrl={m.photo_url} bio={m.short_bio} />
+                rank={m.ranks?.name} photoUrl={m.photo_url} bio={m.short_bio} occupation={m.occupation} />
             ))}
           </div>
         ) : (

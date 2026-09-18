@@ -47,6 +47,6 @@ function splitCsvRows(text: string): string[][] {
 
 /** Builds a downloadable CSV template matching bulkCreateMembers' expected columns. */
 export const MEMBER_IMPORT_TEMPLATE = [
-  "full_name,phone,email,date_of_birth,gender,address,church,guardian_name,guardian_phone,emergency_contact,rank,unit,public_profile,short_bio",
+  "full_name,phone,email,date_of_birth,gender,address,church,guardian_name,guardian_phone,emergency_contact,rank,unit,public_profile,short_bio,occupation",
   "Jane Doe,08012345678,jane@example.org,2008-04-12,female,\"12 Church Rd, City\",CAC City Assembly,John Doe,08087654321,John Doe - 08087654321,1st Platoon,,yes,Loves choir and outreach",
 ].join("\n");
