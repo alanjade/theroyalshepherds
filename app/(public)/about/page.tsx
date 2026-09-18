@@ -99,7 +99,7 @@ export default async function AboutPage() {
           <SectionHeader title="Aims &amp; Objectives" align="left" />
           <p className="text-charcoal/70 leading-relaxed -mt-4 mb-6">
             The primary aim of the Royal Shepherds—the youth paramilitary movement of the Christ
-            Apostolic Church (CAC)—is Character development and making all youths &quot;born
+            Apostolic Church (CAC) — is Character development and making all youths &quot;born
             again&quot; disciples of Christ and good citizens.
           </p>
           <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
