@@ -7,6 +7,8 @@ update site_settings set
   company_name = '[Company Name] Company',
   company_motto = 'One Fold, One Shepherd',
   company_description = 'The Royal Shepherds [Company Name] Company exists to raise Christ-centered young people through faith, leadership, discipline, service and fellowship. (Demo description — replace with your company''s real description.)',
+  logo_url = '/logo.jpg',
+  favicon_url = '/logo.jpg',
   address = '[Church Address, City]',
   phone = '+234 000 000 0000',
   email = 'info@example.org',

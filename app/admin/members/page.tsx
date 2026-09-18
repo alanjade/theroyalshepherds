@@ -5,8 +5,9 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/Button";
 import { MemberFormDialog } from "@/components/admin/MemberFormDialog";
+import { BulkImportDialog } from "@/components/admin/BulkImportDialog";
 import { MemberRowActions } from "@/components/admin/MemberRowActions";
-import { Users, Plus } from "lucide-react";
+import { Users, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 
 const PAGE_SIZE = 20;
@@ -18,6 +19,7 @@ export default async function AdminMembersPage({
   const page = Math.max(1, Number(sp.page) || 1);
   const search = sp.search?.trim();
   const showNew = sp.new === "1";
+  const showBulk = sp.bulk === "1";
 
   const supabase = await createClient();
   let query = supabase.from("members").select("*, ranks(name), units(name)", { count: "exact" });
@@ -39,7 +41,10 @@ export default async function AdminMembersPage({
             <h1 className="font-display text-2xl font-bold text-royal-900">Members</h1>
             <p className="text-sm text-charcoal/60">{count ?? 0} total members</p>
           </div>
-          <Button href="/admin/members?new=1" size="sm"><Plus className="h-4 w-4" /> Add Member</Button>
+          <div className="flex gap-3">
+            <Button href="/admin/members?new=1" size="sm"><Plus className="h-4 w-4" /> Add Member</Button>
+            <Button href="/admin/members?bulk=1" size="sm" variant="outline"><Upload className="h-4 w-4" /> Bulk Import</Button>
+          </div>
         </div>
 
         <form className="flex flex-wrap gap-3" action="/admin/members">
@@ -75,6 +80,7 @@ export default async function AdminMembersPage({
       </div>
 
       {showNew && <MemberFormDialog ranks={ranks ?? []} units={units ?? []} />}
+      {showBulk && <BulkImportDialog />}
     </RequireAdmin>
   );
 }

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requirePermission, requireRole, logAudit } from "@/lib/auth";
 import { uniqueSlug } from "@/lib/utils/slug";
+import { parseCsv } from "@/lib/utils/csv";
 import { sanitizeHtml } from "@/lib/utils/sanitize";
 import { eventSchema, newsSchema, memberSchema } from "@/lib/validation/schemas";
 import { sendEmail, templates } from "@/lib/email";
@@ -124,6 +125,116 @@ export async function createMember(formData: FormData): Promise<ActionResult> {
   await logAudit("member_created", "members", data.id, { membership_number: numberResult });
   revalidatePath("/admin/members");
   return { success: true, id: data.id };
+}
+
+export type BulkImportResult = {
+  success: true;
+  created: number;
+  errors: { row: number; name: string; message: string }[];
+} | { success: false; error: string };
+
+/**
+ * Bulk-creates members from an uploaded CSV. Each row is validated and
+ * inserted independently — one bad row is reported and skipped rather than
+ * aborting the whole batch. Membership numbers are still generated
+ * server-side per row via the same RPC createMember uses, so numbering
+ * stays consistent and race-free whether a member was added one at a time
+ * or via import.
+ *
+ * Expected columns (header row required): full_name, phone, email,
+ * date_of_birth, gender, address, church, guardian_name, guardian_phone,
+ * emergency_contact, rank, unit, public_profile, short_bio.
+ * `rank` and `unit` are matched by name (case-insensitive) against existing
+ * ranks/units — unmatched names are left blank rather than failing the row,
+ * since rank/unit are optional on a member.
+ */
+export async function bulkCreateMembers(formData: FormData): Promise<BulkImportResult> {
+  await requirePermission("members.manage");
+
+  const file = formData.get("csv_file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { success: false, error: "Please choose a CSV file." };
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    return { success: false, error: "File is too large (2MB limit)." };
+  }
+
+  const text = await file.text();
+  const rows = parseCsv(text);
+  if (rows.length === 0) {
+    return { success: false, error: "No data rows found in the CSV." };
+  }
+  if (rows.length > 500) {
+    return { success: false, error: "Please import 500 members or fewer per file." };
+  }
+
+  const supabase = await createClient();
+  const [{ data: ranks }, { data: units }] = await Promise.all([
+    supabase.from("ranks").select("id, name"),
+    supabase.from("units").select("id, name"),
+  ]);
+  const rankByName = new Map((ranks ?? []).map((r) => [r.name.trim().toLowerCase(), r.id]));
+  const unitByName = new Map((units ?? []).map((u) => [u.name.trim().toLowerCase(), u.id]));
+
+  const errors: { row: number; name: string; message: string }[] = [];
+  let created = 0;
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]!;
+    const rowNumber = i + 2; // +1 for header, +1 for 1-indexing
+    const name = row.full_name || "(unnamed row)";
+
+    const parsed = memberSchema.safeParse({
+      full_name: row.full_name,
+      status: "active",
+      public_profile: /^(yes|true|1)$/i.test(row.public_profile ?? ""),
+      short_bio: row.short_bio || "",
+      phone: row.phone || "",
+      email: row.email || "",
+      date_of_birth: row.date_of_birth || "",
+      gender: row.gender || "",
+      address: row.address || "",
+      church: row.church || "",
+      guardian_name: row.guardian_name || "",
+      guardian_phone: row.guardian_phone || "",
+      emergency_contact: row.emergency_contact || "",
+    });
+
+    if (!parsed.success) {
+      errors.push({ row: rowNumber, name, message: parsed.error.issues[0]?.message ?? "Invalid data." });
+      continue;
+    }
+
+    const { data: numberResult, error: numberError } = await supabase.rpc("generate_membership_number");
+    if (numberError || !numberResult) {
+      errors.push({ row: rowNumber, name, message: "Could not generate a membership number." });
+      continue;
+    }
+
+    const rankId = row.rank ? rankByName.get(row.rank.trim().toLowerCase()) ?? null : null;
+    const unitId = row.unit ? unitByName.get(row.unit.trim().toLowerCase()) ?? null : null;
+
+    const { error: insertError } = await supabase.from("members").insert({
+      ...parsed.data,
+      membership_number: numberResult,
+      rank_id: rankId,
+      unit_id: unitId,
+      date_of_birth: parsed.data.date_of_birth || null,
+    });
+
+    if (insertError) {
+      errors.push({ row: rowNumber, name, message: "Could not save this member." });
+      continue;
+    }
+    created++;
+  }
+
+  if (created > 0) {
+    await logAudit("member_created", "members", null, { source: "bulk_import", created, failed: errors.length });
+    revalidatePath("/admin/members");
+  }
+
+  return { success: true, created, errors };
 }
 
 export async function archiveMember(memberId: string): Promise<ActionResult> {
