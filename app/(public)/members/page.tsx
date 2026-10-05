@@ -11,16 +11,26 @@ export const metadata: Metadata = { title: "Members" };
 // the public_members view + RLS, never a raw `members` select.
 export default async function MembersPage() {
   const supabase = await createClient();
-  const { data: members } = await supabase
+  const { data } = await supabase
     .from("public_members")
-    .select("id, full_name, photo_url, short_bio, occupation, ranks(name), units(name)");
+    .select("id, full_name, photo_url, short_bio, occupation, ranks(name, display_order), units(name, display_order)");
+
+  // Ranked members first (most senior first), then group members
+  // (Seniors > Intermediates > Junior > Anchor), then alphabetically.
+  const members = (data ?? []).slice().sort((a: any, b: any) => {
+    const ra = a.ranks?.display_order ?? 999, rb = b.ranks?.display_order ?? 999;
+    if (ra !== rb) return ra - rb;
+    const ua = a.units?.display_order ?? 999, ub = b.units?.display_order ?? 999;
+    if (ua !== ub) return ua - ub;
+    return String(a.full_name).localeCompare(String(b.full_name));
+  });
 
   return (
     <div className="py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeader eyebrow="Our Community" title="Members"
-          description="A selection of members who have chosen to share a public profile." />
-        {members && members.length > 0 ? (
+          description="The officers, men and women of The Royal Shepherds." />
+        {members.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
             {members.map((m: any) => (
               <OfficerCard key={m.id} name={m.full_name} position={m.units?.name ?? "Member"}
