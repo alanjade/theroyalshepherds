@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Membership" };
 
 const FAQS = [
-  { q: "Who can join?", a: "Young people connected to Christ Apostolic Church who are ready to grow in faith, leadership and service. [Update with your company's actual eligibility criteria.]" },
+  { q: "Who can join?", a: "Young people connected to Christ Apostolic Church who are ready to grow in faith, leadership and service." },
   { q: "What is the membership process?", a: "Submit the application below, meet with a company officer, and complete a short orientation before your membership number is issued." },
-  { q: "What is expected of members?", a: "Regular attendance, participation in company activities, and living out the company's core values. [Update with your company's actual expectations.]" },
+  { q: "What is expected of members?", a: "Regular attendance, participation in company activities, and living out the company's core values." },
 ];
 
 export default function MembershipPage() {
