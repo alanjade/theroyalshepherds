@@ -25,7 +25,14 @@ export default async function AdminMembersPage({
   let query = supabase.from("members").select("*, ranks(name), units(name)", { count: "exact" });
   if (search) query = query.ilike("full_name", `%${search}%`);
   if (sp.status) query = query.eq("status", sp.status);
-  query = query.order("created_at", { ascending: false }).range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
+  if (sp.rank) query = query.eq("rank_id", sp.rank);
+  if (sp.unit) query = query.eq("unit_id", sp.unit);
+  // Bulk-imported members share one created_at, so add a unique tie-breaker;
+  // otherwise the order is unstable and rows jump or repeat between pages.
+  query = query
+    .order("created_at", { ascending: false })
+    .order("membership_number", { ascending: true })
+    .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   const { data: members, count } = await query;
 
   const [{ data: ranks }, { data: units }] = await Promise.all([
@@ -57,7 +64,16 @@ export default async function AdminMembersPage({
             <option value="suspended">Suspended</option>
             <option value="archived">Archived</option>
           </select>
+          <select name="rank" defaultValue={sp.rank ?? ""} className="rounded-lg border border-royal-200 px-3 py-2 text-sm">
+            <option value="">All Ranks</option>
+            {(ranks ?? []).map((r: any) => <option key={r.id} value={r.id}>{r.name}</option>)}
+          </select>
+          <select name="unit" defaultValue={sp.unit ?? ""} className="rounded-lg border border-royal-200 px-3 py-2 text-sm">
+            <option value="">All Units</option>
+            {(units ?? []).map((u: any) => <option key={u.id} value={u.id}>{u.name}</option>)}
+          </select>
           <Button type="submit" variant="outline" size="sm">Filter</Button>
+          <Button href="/admin/members" variant="ghost" size="sm">Clear</Button>
         </form>
 
         <DataTable
@@ -76,7 +92,7 @@ export default async function AdminMembersPage({
           rowActions={(m: any) => <MemberRowActions member={m} />}
         />
 
-        <Pagination page={page} pageSize={PAGE_SIZE} total={count ?? 0} basePath="/admin/members" searchParams={{ search, status: sp.status }} />
+        <Pagination page={page} pageSize={PAGE_SIZE} total={count ?? 0} basePath="/admin/members" searchParams={{ search, status: sp.status, rank: sp.rank, unit: sp.unit }} />
       </div>
 
       {showNew && <MemberFormDialog ranks={ranks ?? []} units={units ?? []} />}
