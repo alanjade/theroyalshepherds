@@ -351,3 +351,53 @@ export async function updateSiteSettings(formData: FormData): Promise<ActionResu
   revalidatePath("/", "layout");
   return { success: true };
 }
+
+// ---------------------------------------------------------------------------
+// Ordering (ranks, units, members)
+// ---------------------------------------------------------------------------
+/** Move a rank or unit up/down one place. Renumbers the list 1..n so ties can't occur. */
+export async function moveLookupItem(
+  table: "ranks" | "units",
+  id: string,
+  direction: "up" | "down"
+): Promise<ActionResult> {
+  await requirePermission("members.manage");
+  if (table !== "ranks" && table !== "units") return { success: false, error: "Invalid list." };
+  const supabase = await createClient();
+
+  const { data: rows, error } = await supabase
+    .from(table).select("id").order("display_order").order("name");
+  if (error || !rows) return { success: false, error: "Could not load the list." };
+
+  const ids = rows.map((r) => r.id as string);
+  const i = ids.indexOf(id);
+  const j = direction === "up" ? i - 1 : i + 1;
+  if (i === -1 || j < 0 || j >= ids.length) return { success: true };
+  const tmp = ids[i]!;
+  ids[i] = ids[j]!;
+  ids[j] = tmp;
+
+  const results = await Promise.all(
+    ids.map((rowId, idx) => supabase.from(table).update({ display_order: idx + 1 }).eq("id", rowId))
+  );
+  if (results.some((r) => r.error)) return { success: false, error: "Could not save the new order." };
+
+  await logAudit("order_changed", table, id, { direction });
+  revalidatePath(`/admin/${table}`);
+  revalidatePath("/members");
+  return { success: true };
+}
+
+/** Set a member's position among members of the same rank/unit on the public page. */
+export async function updateMemberOrder(memberId: string, order: number): Promise<ActionResult> {
+  await requirePermission("members.manage");
+  const value = Math.max(0, Math.min(100000, Math.trunc(Number(order))));
+  if (!Number.isFinite(value)) return { success: false, error: "Enter a whole number." };
+  const supabase = await createClient();
+  const { error } = await supabase.from("members").update({ display_order: value }).eq("id", memberId);
+  if (error) return { success: false, error: "Could not save the order." };
+  await logAudit("member_updated", "members", memberId, { display_order: value });
+  revalidatePath("/admin/members");
+  revalidatePath("/members");
+  return { success: true };
+}

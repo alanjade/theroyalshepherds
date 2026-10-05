@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { MemberFormDialog } from "@/components/admin/MemberFormDialog";
 import { BulkImportDialog } from "@/components/admin/BulkImportDialog";
 import { MemberRowActions } from "@/components/admin/MemberRowActions";
+import { MemberOrderInput } from "@/components/admin/MemberOrderInput";
 import { Users, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 
@@ -29,9 +30,12 @@ export default async function AdminMembersPage({
   if (sp.unit) query = query.eq("unit_id", sp.unit);
   // Bulk-imported members share one created_at, so add a unique tie-breaker;
   // otherwise the order is unstable and rows jump or repeat between pages.
+  if (sp.sort === "order") {
+    query = query.order("display_order", { ascending: true }).order("membership_number", { ascending: true });
+  } else {
+    query = query.order("created_at", { ascending: false }).order("membership_number", { ascending: true });
+  }
   query = query
-    .order("created_at", { ascending: false })
-    .order("membership_number", { ascending: true })
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   const { data: members, count } = await query;
 
@@ -72,6 +76,10 @@ export default async function AdminMembersPage({
             <option value="">All Units</option>
             {(units ?? []).map((u: any) => <option key={u.id} value={u.id}>{u.name}</option>)}
           </select>
+          <select name="sort" defaultValue={sp.sort ?? ""} className="rounded-lg border border-royal-200 px-3 py-2 text-sm">
+            <option value="">Newest first</option>
+            <option value="order">Display order</option>
+          </select>
           <Button type="submit" variant="outline" size="sm">Filter</Button>
           <Button href="/admin/members" variant="ghost" size="sm">Clear</Button>
         </form>
@@ -84,6 +92,7 @@ export default async function AdminMembersPage({
             { header: "Unit", render: (m: any) => m.units?.name ?? "—" },
             { header: "Status", render: (m: any) => <StatusBadge status={m.status} /> },
             { header: "Public Profile", render: (m: any) => m.public_profile ? "Yes" : "No" },
+            { header: "Order", render: (m: any) => <MemberOrderInput key={`${m.id}-${m.display_order}`} id={m.id} value={m.display_order ?? 0} /> },
           ]}
           rows={members ?? []}
           emptyIcon={Users}
@@ -92,7 +101,7 @@ export default async function AdminMembersPage({
           rowActions={(m: any) => <MemberRowActions member={m} />}
         />
 
-        <Pagination page={page} pageSize={PAGE_SIZE} total={count ?? 0} basePath="/admin/members" searchParams={{ search, status: sp.status, rank: sp.rank, unit: sp.unit }} />
+        <Pagination page={page} pageSize={PAGE_SIZE} total={count ?? 0} basePath="/admin/members" searchParams={{ search, status: sp.status, rank: sp.rank, unit: sp.unit, sort: sp.sort }} />
       </div>
 
       {showNew && <MemberFormDialog ranks={ranks ?? []} units={units ?? []} />}

@@ -19,7 +19,7 @@ export default async function MembersPage() {
   // relying on PostgREST inferring relationships through the view.
   const [membersRes, ranksRes, unitsRes] = await Promise.all([
     supabase.from("public_members")
-      .select("id, full_name, photo_url, short_bio, occupation, rank_id, unit_id")
+      .select("id, full_name, photo_url, short_bio, occupation, rank_id, unit_id, display_order")
       .limit(1000),
     supabase.from("ranks").select("id, name, display_order"),
     supabase.from("units").select("id, name, display_order"),
@@ -30,7 +30,7 @@ export default async function MembersPage() {
   const unitById = new Map((unitsRes.data ?? []).map((u: any) => [u.id, u]));
 
   // Ranked members first (most senior first), then group members
-  // (Seniors > Intermediates > Junior > Anchor), then alphabetically.
+  // (Seniors > Intermediates > Junior > Anchor), then by the order set in admin, then alphabetically.
   const members = (membersRes.data ?? [])
     .map((m: any) => ({ ...m, rank: rankById.get(m.rank_id), unit: unitById.get(m.unit_id) }))
     .sort((a: any, b: any) => {
@@ -38,6 +38,7 @@ export default async function MembersPage() {
       if (ra !== rb) return ra - rb;
       const ua = a.unit?.display_order ?? 999, ub = b.unit?.display_order ?? 999;
       if (ua !== ub) return ua - ub;
+      if ((a.display_order ?? 0) !== (b.display_order ?? 0)) return (a.display_order ?? 0) - (b.display_order ?? 0);
       return String(a.full_name).localeCompare(String(b.full_name));
     });
 

@@ -1,6 +1,7 @@
 import { RequireAdmin } from "@/components/admin/RequireAdmin";
 import { createClient } from "@/lib/supabase/server";
 import { DataTable } from "@/components/admin/DataTable";
+import { ReorderButtons } from "@/components/admin/ReorderButtons";
 import { Shield } from "lucide-react";
 
 export default async function AdminRanksPage() {
@@ -11,7 +12,7 @@ export default async function AdminRanksPage() {
       <div className="space-y-6">
         <div>
           <h1 className="font-display text-2xl font-bold text-royal-900">Ranks</h1>
-          <p className="text-sm text-charcoal/60">Organization ranks are not invented by this system — configure your company's actual rank structure here.</p>
+          <p className="text-sm text-charcoal/60">Ranks are listed on the Members page from top to bottom in this order. Use the arrows to change it.</p>
         </div>
         <DataTable
           columns={[
@@ -21,6 +22,10 @@ export default async function AdminRanksPage() {
             { header: "Order", render: (r: any) => r.display_order },
           ]}
           rows={ranks ?? []}
+          rowActions={(r: any) => {
+            const list = ranks ?? [];
+            return <ReorderButtons table="ranks" id={r.id} isFirst={list[0]?.id === r.id} isLast={list[list.length - 1]?.id === r.id} />;
+          }}
           emptyIcon={Shield}
           emptyTitle="No ranks configured yet"
         />
