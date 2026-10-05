@@ -142,7 +142,7 @@ export type BulkImportResult = {
  * or via import.
  *
  * Expected columns (header row required): full_name, phone, email,
- * date_of_birth, gender, address, church, guardian_name, guardian_phone,
+ * date_of_birth, gender, address, guardian_name, guardian_phone,
  * emergency_contact, rank, unit, public_profile, short_bio, occupation.
  * `rank` and `unit` are matched by name (case-insensitive) against existing
  * ranks/units — unmatched names are left blank rather than failing the row,
@@ -195,7 +195,6 @@ export async function bulkCreateMembers(formData: FormData): Promise<BulkImportR
       date_of_birth: row.date_of_birth || "",
       gender: row.gender || "",
       address: row.address || "",
-      church: row.church || "",
       guardian_name: row.guardian_name || "",
       guardian_phone: row.guardian_phone || "",
       emergency_contact: row.emergency_contact || "",

@@ -18,7 +18,6 @@ export default async function MemberDetailPage({ params }: { params: Promise<{ i
     ["Email", member.email ?? "—"],
     ["Date of Birth", member.date_of_birth ?? "—"],
     ["Address", member.address ?? "—"],
-    ["Church", member.church ?? "—"],
     ["Guardian", member.guardian_name ?? "—"],
     ["Guardian Phone", member.guardian_phone ?? "—"],
     ["Emergency Contact", member.emergency_contact ?? "—"],

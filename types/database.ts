@@ -48,7 +48,7 @@ export interface Database {
           id: string; membership_number: string; full_name: string; photo_url: string | null;
           rank_id: string | null; unit_id: string | null; status: MemberStatus; public_profile: boolean;
           short_bio: string | null; occupation: string | null; phone: string | null; email: string | null; date_of_birth: string | null;
-          gender: string | null; address: string | null; church: string | null; guardian_name: string | null;
+          gender: string | null; address: string | null; guardian_name: string | null;
           guardian_phone: string | null; emergency_contact: string | null; private_notes: string | null;
           joined_at: string; created_at: string; updated_at: string;
         };
@@ -118,7 +118,7 @@ export interface Database {
       membership_applications: {
         Row: {
           id: string; full_name: string; email: string; phone: string | null; date_of_birth: string | null;
-          gender: string | null; address: string | null; church: string | null; parent_or_guardian_name: string | null;
+          gender: string | null; address: string | null; parent_or_guardian_name: string | null;
           parent_or_guardian_phone: string | null; emergency_contact: string | null; previous_experience: string | null;
           message: string | null; status: ApplicationStatus; reviewer_notes: string | null; reviewed_by: string | null;
           member_id: string | null; created_at: string; updated_at: string;

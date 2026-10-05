@@ -41,7 +41,6 @@ export function MembershipApplicationForm() {
             <option value="female">Female</option>
           </select>
         </div>
-        <div><label className={labelClass}>Church *</label><input name="church" required className={inputClass} /></div>
       </div>
       <div><label className={labelClass}>Address *</label><textarea name="address" rows={2} required className={inputClass} /></div>
       <div className="grid sm:grid-cols-2 gap-4">
