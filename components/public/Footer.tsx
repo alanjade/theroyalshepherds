@@ -43,6 +43,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           <h3 className="text-white font-semibold mb-3 text-sm">Navigation</h3>
           <ul className="space-y-2 text-sm">
             <li><Link href="/about" className="hover:text-white">About</Link></li>
+            <li><Link href="/members" className="hover:text-white">Members</Link></li>
             <li><Link href="/events" className="hover:text-white">Events</Link></li>
             <li><Link href="/news" className="hover:text-white">News</Link></li>
             <li><Link href="/gallery" className="hover:text-white">Gallery</Link></li>

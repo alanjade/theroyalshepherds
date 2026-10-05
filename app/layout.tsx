@@ -5,7 +5,7 @@ import "./globals.css";
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const seo = settings.seo as { site_title?: string; meta_description?: string; keywords?: string[]; og_image?: string };
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://theroyalshepherds.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://8thibadancompany.vercel.app";
 
   return {
     metadataBase: new URL(siteUrl),
