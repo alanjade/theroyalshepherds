@@ -474,3 +474,65 @@ export async function removeOfficer(officerId: string): Promise<ActionResult> {
   revalidatePath("/leadership");
   return { success: true };
 }
+
+// ---------------------------------------------------------------------------
+// Member profile editing + photo
+// ---------------------------------------------------------------------------
+export async function updateMember(memberId: string, formData: FormData): Promise<ActionResult> {
+  await requirePermission("members.manage");
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = memberSchema.safeParse({ ...raw, public_profile: raw.public_profile === "on" });
+  if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid data." };
+
+  const d = parsed.data;
+  const blankToNull = (v?: string | null) => (v && v.trim() ? v.trim() : null);
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("members").update({
+    full_name: d.full_name.trim(),
+    status: d.status,
+    public_profile: d.public_profile,
+    rank_id: d.rank_id || null,
+    unit_id: d.unit_id || null,
+    phone: blankToNull(d.phone),
+    email: blankToNull(d.email),
+    date_of_birth: d.date_of_birth || null,
+    gender: blankToNull(d.gender),
+    address: blankToNull(d.address),
+    guardian_name: blankToNull(d.guardian_name),
+    guardian_phone: blankToNull(d.guardian_phone),
+    emergency_contact: blankToNull(d.emergency_contact),
+    occupation: blankToNull(d.occupation),
+    short_bio: blankToNull(d.short_bio),
+  }).eq("id", memberId);
+  if (error) return { success: false, error: "Could not save the profile." };
+
+  await logAudit("member_updated", "members", memberId);
+  revalidatePath("/admin/members");
+  revalidatePath(`/admin/members/${memberId}`);
+  revalidatePath("/members");
+  revalidatePath("/leadership");
+  return { success: true };
+}
+
+/**
+ * Saves (or clears) a member's photo URL. The file itself is uploaded from the
+ * browser straight to storage; here we only accept URLs that point at our own
+ * public `company-assets/members/` folder so an arbitrary link can't be injected.
+ */
+export async function updateMemberPhoto(memberId: string, url: string | null): Promise<ActionResult> {
+  await requirePermission("members.manage");
+  if (url) {
+    const prefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/company-assets/members/`;
+    if (!url.startsWith(prefix)) return { success: false, error: "Invalid photo location." };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.from("members").update({ photo_url: url }).eq("id", memberId);
+  if (error) return { success: false, error: "Could not save the photo." };
+  await logAudit("member_updated", "members", memberId, { photo: url ? "set" : "removed" });
+  revalidatePath("/admin/members");
+  revalidatePath(`/admin/members/${memberId}`);
+  revalidatePath("/members");
+  revalidatePath("/leadership");
+  return { success: true };
+}
