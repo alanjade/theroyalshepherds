@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils/cn";
 import { hasRole, type Role } from "@/lib/auth/roles";
 import {
   LayoutDashboard, Users, Star, Shield, Building2, Calendar, Newspaper,
-  Images, ClipboardList, FileText, Mail, Settings, History, KeyRound, X,
+  Images, ClipboardList, FileText, Mail, Package, Settings, History, KeyRound, X,
 } from "lucide-react";
 
 const NAV = [
@@ -20,6 +20,7 @@ const NAV = [
   { minRole: "editor" as Role, href: "/admin/gallery", label: "Gallery", icon: Images },
   { minRole: "admin" as Role, href: "/admin/applications", label: "Applications", icon: ClipboardList },
   { minRole: "editor" as Role, href: "/admin/resources", label: "Resources", icon: FileText },
+  { minRole: "officer" as Role, href: "/admin/assets", label: "Assets", icon: Package },
   { minRole: "officer" as Role, href: "/admin/messages", label: "Messages", icon: Mail },
   { minRole: "super_admin" as Role, href: "/admin/users", label: "Admin Access", icon: KeyRound },
   { minRole: "admin" as Role, href: "/admin/settings", label: "Settings", icon: Settings },

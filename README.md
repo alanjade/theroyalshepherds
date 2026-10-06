@@ -56,6 +56,9 @@ This applies everything in `supabase/migrations/`:
 - `0002_rls_policies.sql` — Row Level Security policies for every table
 - `0003_workflows_storage.sql` — the atomic application→member approval
   function, membership-number generator, and storage buckets/policies
+- `0012_assets.sql` — asset inventory and check-out/check-in history, with the
+  `checkout_asset` / `checkin_asset` functions (later migrations `0004`–`0010` cover
+  units, member fields, password change and profile hardening)
 
 ## 5. Seed data (optional but recommended for first run)
 

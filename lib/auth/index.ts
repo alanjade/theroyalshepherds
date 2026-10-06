@@ -59,6 +59,8 @@ const PERMISSIONS: Record<string, Role> = {
   "applications.approve": "admin",
   "messages.manage": "officer",
   "settings.manage": "admin",
+  "assets.checkout": "officer",
+  "assets.manage": "admin",
   "audit.view": "admin",
   "profiles.manage": "super_admin",
 };
