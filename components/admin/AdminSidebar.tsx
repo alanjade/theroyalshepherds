@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
 import {
   LayoutDashboard, Users, Star, Shield, Building2, Calendar, Newspaper,
-  Images, ClipboardList, FileText, Mail, Settings, History, X,
+  Images, ClipboardList, FileText, Mail, Settings, History, KeyRound, X,
 } from "lucide-react";
 
 const NAV = [
@@ -20,6 +20,7 @@ const NAV = [
   { href: "/admin/applications", label: "Applications", icon: ClipboardList },
   { href: "/admin/resources", label: "Resources", icon: FileText },
   { href: "/admin/messages", label: "Messages", icon: Mail },
+  { href: "/admin/users", label: "Admin Access", icon: KeyRound },
   { href: "/admin/settings", label: "Settings", icon: Settings },
   { href: "/admin/audit-logs", label: "Audit Logs", icon: History },
 ];
