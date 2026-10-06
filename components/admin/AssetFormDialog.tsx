@@ -69,7 +69,7 @@ export function AssetFormDialog({ asset, basePath = "/admin/assets" }: { asset?:
                 <input type="number" name="quantity" min={1} max={100000} required defaultValue={asset?.quantity ?? 1} className={inputClass} />
               </div>
             ) : (
-              <div><label className={labelClass}>Serial number</label><input name="serial_number" defaultValue={asset?.serial_number ?? ""} className={inputClass} /></div>
+              <div><label className={labelClass}>Serial number</label><input name="serial_number" defaultValue={asset?.serial_number ?? ""} className={inputClass} placeholder="Auto (SN-000001)" /></div>
             )}
             <div><label className={labelClass}>Storage location</label><input name="location" defaultValue={asset?.location ?? ""} className={inputClass} placeholder="e.g. Store room" /></div>
           </div>
