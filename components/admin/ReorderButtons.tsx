@@ -7,7 +7,7 @@ import { moveLookupItem } from "@/app/actions/admin";
 
 export function ReorderButtons({
   table, id, isFirst, isLast,
-}: { table: "ranks" | "units"; id: string; isFirst: boolean; isLast: boolean }) {
+}: { table: "ranks" | "units" | "officers"; id: string; isFirst: boolean; isLast: boolean }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 

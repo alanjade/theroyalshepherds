@@ -357,16 +357,16 @@ export async function updateSiteSettings(formData: FormData): Promise<ActionResu
 // ---------------------------------------------------------------------------
 /** Move a rank or unit up/down one place. Renumbers the list 1..n so ties can't occur. */
 export async function moveLookupItem(
-  table: "ranks" | "units",
+  table: "ranks" | "units" | "officers",
   id: string,
   direction: "up" | "down"
 ): Promise<ActionResult> {
   await requirePermission("members.manage");
-  if (table !== "ranks" && table !== "units") return { success: false, error: "Invalid list." };
+  if (table !== "ranks" && table !== "units" && table !== "officers") return { success: false, error: "Invalid list." };
   const supabase = await createClient();
 
   const { data: rows, error } = await supabase
-    .from(table).select("id").order("display_order").order("name");
+    .from(table).select("id").order("display_order").order("created_at");
   if (error || !rows) return { success: false, error: "Could not load the list." };
 
   const ids = rows.map((r) => r.id as string);
@@ -384,7 +384,7 @@ export async function moveLookupItem(
 
   await logAudit("order_changed", table, id, { direction });
   revalidatePath(`/admin/${table}`);
-  revalidatePath("/members");
+  revalidatePath(table === "officers" ? "/leadership" : "/members");
   return { success: true };
 }
 
@@ -399,5 +399,77 @@ export async function updateMemberOrder(memberId: string, order: number): Promis
   await logAudit("member_updated", "members", memberId, { display_order: value });
   revalidatePath("/admin/members");
   revalidatePath("/members");
+  return { success: true };
+}
+
+// ---------------------------------------------------------------------------
+// Officers (leadership positions shown on /leadership)
+// ---------------------------------------------------------------------------
+export async function assignOfficer(formData: FormData): Promise<ActionResult> {
+  await requirePermission("officers.manage");
+  const memberId = String(formData.get("member_id") ?? "");
+  let positionId = String(formData.get("position_id") ?? "");
+  const newTitle = String(formData.get("new_position") ?? "").trim();
+  const publicVisible = formData.get("public_visible") === "on";
+  if (!memberId) return { success: false, error: "Choose a member." };
+  if (!positionId && !newTitle) return { success: false, error: "Choose a position or type a new one." };
+  if (newTitle.length > 100) return { success: false, error: "Position title is too long." };
+
+  const supabase = await createClient();
+
+  // Reuse an existing position with the same title, otherwise create it.
+  if (newTitle) {
+    const { data: existing } = await supabase.from("officer_positions").select("id").ilike("title", newTitle).maybeSingle();
+    if (existing) {
+      positionId = existing.id;
+    } else {
+      const { data: last } = await supabase.from("officer_positions").select("display_order").order("display_order", { ascending: false }).limit(1).maybeSingle();
+      const { data: created, error: posError } = await supabase.from("officer_positions")
+        .insert({ title: newTitle, display_order: (last?.display_order ?? 0) + 1 }).select("id").single();
+      if (posError || !created) return { success: false, error: "Could not create the position." };
+      positionId = created.id;
+    }
+  }
+
+  const { data: dup } = await supabase.from("officers").select("id").eq("member_id", memberId).eq("position_id", positionId).maybeSingle();
+  if (dup) return { success: false, error: "This member already holds that position." };
+
+  const { data: member } = await supabase.from("members").select("rank_id").eq("id", memberId).single();
+  const { data: lastOfficer } = await supabase.from("officers").select("display_order").order("display_order", { ascending: false }).limit(1).maybeSingle();
+
+  const { data, error } = await supabase.from("officers").insert({
+    member_id: memberId,
+    position_id: positionId,
+    rank_id: member?.rank_id ?? null,
+    public_visible: publicVisible,
+    display_order: (lastOfficer?.display_order ?? 0) + 1,
+  }).select("id").single();
+  if (error || !data) return { success: false, error: "Could not assign the officer." };
+
+  await logAudit("officer_assigned", "officers", data.id, { member_id: memberId, position_id: positionId });
+  revalidatePath("/admin/officers");
+  revalidatePath("/leadership");
+  return { success: true, id: data.id };
+}
+
+export async function setOfficerVisibility(officerId: string, visible: boolean): Promise<ActionResult> {
+  await requirePermission("officers.manage");
+  const supabase = await createClient();
+  const { error } = await supabase.from("officers").update({ public_visible: visible }).eq("id", officerId);
+  if (error) return { success: false, error: "Could not update the officer." };
+  await logAudit("officer_updated", "officers", officerId, { public_visible: visible });
+  revalidatePath("/admin/officers");
+  revalidatePath("/leadership");
+  return { success: true };
+}
+
+export async function removeOfficer(officerId: string): Promise<ActionResult> {
+  await requirePermission("officers.manage");
+  const supabase = await createClient();
+  const { error } = await supabase.from("officers").delete().eq("id", officerId);
+  if (error) return { success: false, error: "Could not remove the officer." };
+  await logAudit("officer_removed", "officers", officerId);
+  revalidatePath("/admin/officers");
+  revalidatePath("/leadership");
   return { success: true };
 }
