@@ -22,7 +22,7 @@ export default async function MembersPage() {
       .select("id, full_name, photo_url, short_bio, occupation, rank_id, unit_id, display_order")
       .limit(1000),
     supabase.from("ranks").select("id, name, display_order"),
-    supabase.from("units").select("id, name, display_order"),
+    supabase.from("units").select("id, name, display_order, show_on_members_page"),
   ]);
   if (membersRes.error) console.error("public_members query failed:", membersRes.error.message);
 
@@ -32,6 +32,8 @@ export default async function MembersPage() {
   // Sorted by unit order, then rank order, then the order set in admin, then alphabetically.
   const members = (membersRes.data ?? [])
     .map((m: any) => ({ ...m, rank: rankById.get(m.rank_id), unit: unitById.get(m.unit_id) }))
+    // Units flagged "hidden" (patrons & chaplain) appear on the Leadership page instead.
+    .filter((m: any) => m.unit?.show_on_members_page !== false)
     .sort((a: any, b: any) => {
       const ua = a.unit?.display_order ?? 999, ub = b.unit?.display_order ?? 999;
       if (ua !== ub) return ua - ub;
