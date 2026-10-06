@@ -1,8 +1,7 @@
-import { requireUser, type Role } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
+import { hasRole, type Role } from "@/lib/auth/roles";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { redirect } from "next/navigation";
-
-const ROLE_RANK: Record<Role, number> = { officer: 1, editor: 2, admin: 3, super_admin: 4 };
 
 /**
  * Server wrapper for every /admin/* page except /admin/login: verifies the
@@ -16,7 +15,7 @@ export async function RequireAdmin({
   const { profile } = await requireUser();
   if (profile.must_change_password) redirect("/admin/change-password");
 
-  if (ROLE_RANK[profile.role as Role] < ROLE_RANK[minRole]) {
+  if (!hasRole(profile.role, minRole)) {
     return (
       <AdminShell userName={profile.full_name} role={profile.role}>
         <div className="rounded-xl2 border border-red-200 bg-red-50 p-8 text-center">

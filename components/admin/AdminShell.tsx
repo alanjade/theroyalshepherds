@@ -22,7 +22,7 @@ export function AdminShell({
 
   return (
     <div className="flex min-h-screen bg-royal-50/30">
-      <AdminSidebar open={open} onClose={() => setOpen(false)} />
+      <AdminSidebar open={open} onClose={() => setOpen(false)} role={role} />
       <div className="flex-1 min-w-0">
         <header className="sticky top-0 z-30 bg-white border-b border-royal-100">
           <div className="flex h-16 items-center justify-between px-4 lg:px-8">
