@@ -29,18 +29,27 @@ export default async function MembersPage() {
   const rankById = new Map((ranksRes.data ?? []).map((r: any) => [r.id, r]));
   const unitById = new Map((unitsRes.data ?? []).map((u: any) => [u.id, u]));
 
-  // Ranked members first (most senior first), then group members
-  // (Seniors > Intermediates > Junior > Anchor), then by the order set in admin, then alphabetically.
+  // Sorted by unit order, then rank order, then the order set in admin, then alphabetically.
   const members = (membersRes.data ?? [])
     .map((m: any) => ({ ...m, rank: rankById.get(m.rank_id), unit: unitById.get(m.unit_id) }))
     .sort((a: any, b: any) => {
-      const ra = a.rank?.display_order ?? 999, rb = b.rank?.display_order ?? 999;
-      if (ra !== rb) return ra - rb;
       const ua = a.unit?.display_order ?? 999, ub = b.unit?.display_order ?? 999;
       if (ua !== ub) return ua - ub;
+      const ra = a.rank?.display_order ?? 999, rb = b.rank?.display_order ?? 999;
+      if (ra !== rb) return ra - rb;
       if ((a.display_order ?? 0) !== (b.display_order ?? 0)) return (a.display_order ?? 0) - (b.display_order ?? 0);
       return String(a.full_name).localeCompare(String(b.full_name));
     });
+
+  // Group into one section per unit (in unit order); members without a unit go last.
+  const sections: { name: string; order: number; members: any[] }[] = [];
+  for (const m of members as any[]) {
+    const name = m.unit?.name ?? "Members";
+    let sec = sections.find((s) => s.name === name);
+    if (!sec) { sec = { name, order: m.unit?.display_order ?? 999, members: [] }; sections.push(sec); }
+    sec.members.push(m);
+  }
+  sections.sort((a, b) => a.order - b.order);
 
   return (
     <div className="py-20">
@@ -48,10 +57,17 @@ export default async function MembersPage() {
         <SectionHeader eyebrow="Our Community" title="Members"
           description="The officers, men and women of The Royal Shepherds." />
         {members.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
-            {members.map((m: any) => (
-              <OfficerCard key={m.id} name={m.full_name} position={m.unit?.name ?? "Member"}
-                rank={m.rank?.name} photoUrl={m.photo_url} bio={m.short_bio} occupation={m.occupation} />
+          <div className="space-y-16">
+            {sections.map((sec) => (
+              <section key={sec.name}>
+                <h2 className="font-display text-xl font-bold text-royal-900 text-center mb-10">{sec.name}</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
+                  {sec.members.map((m: any) => (
+                    <OfficerCard key={m.id} name={m.full_name} position={m.rank?.name ?? sec.name}
+                      photoUrl={m.photo_url} bio={m.short_bio} occupation={m.occupation} />
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         ) : (

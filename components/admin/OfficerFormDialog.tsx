@@ -59,6 +59,9 @@ export function OfficerFormDialog({
             <label className={labelClass}>…or add a new position</label>
             <input name="new_position" maxLength={100} placeholder="e.g. Company Secretary" className={inputClass} />
             <p className="text-xs text-charcoal/50 mt-1">If you type a new position it is used instead of the one selected above.</p>
+            <label className="flex items-center gap-2 text-sm mt-2">
+              <input type="checkbox" name="church_appointed" className="rounded" /> New position is appointed by the church (patron, chaplain…)
+            </label>
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="public_visible" defaultChecked className="rounded" /> Show on the public Leadership page

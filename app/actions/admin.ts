@@ -411,6 +411,7 @@ export async function assignOfficer(formData: FormData): Promise<ActionResult> {
   let positionId = String(formData.get("position_id") ?? "");
   const newTitle = String(formData.get("new_position") ?? "").trim();
   const publicVisible = formData.get("public_visible") === "on";
+  const churchAppointed = formData.get("church_appointed") === "on";
   if (!memberId) return { success: false, error: "Choose a member." };
   if (!positionId && !newTitle) return { success: false, error: "Choose a position or type a new one." };
   if (newTitle.length > 100) return { success: false, error: "Position title is too long." };
@@ -425,7 +426,7 @@ export async function assignOfficer(formData: FormData): Promise<ActionResult> {
     } else {
       const { data: last } = await supabase.from("officer_positions").select("display_order").order("display_order", { ascending: false }).limit(1).maybeSingle();
       const { data: created, error: posError } = await supabase.from("officer_positions")
-        .insert({ title: newTitle, display_order: (last?.display_order ?? 0) + 1 }).select("id").single();
+        .insert({ title: newTitle, display_order: (last?.display_order ?? 0) + 1, church_appointed: churchAppointed }).select("id").single();
       if (posError || !created) return { success: false, error: "Could not create the position." };
       positionId = created.id;
     }
