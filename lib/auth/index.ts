@@ -2,14 +2,9 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export type Role = "super_admin" | "admin" | "editor" | "officer";
+import { ROLE_RANK, type Role } from "./roles";
 
-const ROLE_RANK: Record<Role, number> = {
-  officer: 1,
-  editor: 2,
-  admin: 3,
-  super_admin: 4,
-};
+export type { Role };
 
 /**
  * Returns the current authenticated user + profile, or null.

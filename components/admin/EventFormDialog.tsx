@@ -26,7 +26,7 @@ export function EventFormDialog() {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90dvh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-royal-100">
           <h2 className="font-display font-bold text-royal-900">Create Event</h2>
           <button onClick={close} aria-label="Close"><X className="h-5 w-5" /></button>
@@ -35,7 +35,7 @@ export function EventFormDialog() {
           <div><label className={labelClass}>Title *</label><input name="title" required className={inputClass} /></div>
           <div><label className={labelClass}>Short Description</label><input name="short_description" className={inputClass} /></div>
           <div><label className={labelClass}>Full Description</label><textarea name="description" rows={4} className={inputClass} /></div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className={labelClass}>Start Date *</label><input name="start_date" type="date" required className={inputClass} /></div>
             <div><label className={labelClass}>End Date</label><input name="end_date" type="date" className={inputClass} /></div>
             <div><label className={labelClass}>Start Time</label><input name="start_time" type="time" className={inputClass} /></div>
@@ -46,7 +46,7 @@ export function EventFormDialog() {
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="registration_enabled" className="rounded" /> Enable registration
           </label>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className={labelClass}>Registration Deadline</label><input name="registration_deadline" type="datetime-local" className={inputClass} /></div>
             <div><label className={labelClass}>Capacity</label><input name="registration_capacity" type="number" min={1} className={inputClass} /></div>
           </div>

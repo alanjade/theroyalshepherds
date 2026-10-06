@@ -21,3 +21,9 @@ body { @apply bg-white text-charcoal; }
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Mobile: stop horizontal page scroll and prevent iOS zoom-on-focus in form fields. */
+body { overflow-x: clip; }
+@media (max-width: 639px) {
+  input, select, textarea { font-size: 16px !important; }
+}

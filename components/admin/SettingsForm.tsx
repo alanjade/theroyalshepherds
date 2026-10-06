@@ -33,7 +33,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
       <section className="space-y-4">
         <h2 className="font-semibold text-royal-900">Contact</h2>
         <div><label className={labelClass}>Address</label><input name="address" defaultValue={settings.address ?? ""} className={inputClass} /></div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className={labelClass}>Phone</label><input name="phone" defaultValue={settings.phone ?? ""} className={inputClass} /></div>
           <div><label className={labelClass}>Email</label><input name="email" defaultValue={settings.email ?? ""} className={inputClass} /></div>
         </div>
@@ -53,7 +53,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
         <div><label className={labelClass}>Hero Title</label><input name="hero_title" defaultValue={homepage.hero_title ?? ""} className={inputClass} /></div>
         <div><label className={labelClass}>Hero Subtitle</label><textarea name="hero_subtitle" defaultValue={homepage.hero_subtitle ?? ""} rows={2} className={inputClass} /></div>
         <div><label className={labelClass}>Hero Image URL</label><input name="hero_image" defaultValue={homepage.hero_image ?? ""} className={inputClass} placeholder="Leave blank for the default gradient background" /></div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className={labelClass}>Primary CTA Label</label><input name="cta_primary" defaultValue={homepage.cta_primary ?? ""} className={inputClass} /></div>
           <div><label className={labelClass}>Secondary CTA Label</label><input name="cta_secondary" defaultValue={homepage.cta_secondary ?? ""} className={inputClass} /></div>
         </div>
@@ -64,7 +64,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
             {[0, 1, 2, 3].map((i) => {
               const s = (homepage.stats as unknown as { label: string; value: string }[] | undefined)?.[i];
               return (
-                <div key={i} className="grid grid-cols-2 gap-4">
+                <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <input name={`stat_value_${i}`} defaultValue={s?.value ?? ""} placeholder="Value (e.g. 500+)" className={inputClass} />
                   <input name={`stat_label_${i}`} defaultValue={s?.label ?? ""} placeholder="Label (e.g. Members)" className={inputClass} />
                 </div>

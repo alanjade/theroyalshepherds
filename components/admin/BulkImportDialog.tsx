@@ -38,7 +38,7 @@ export function BulkImportDialog() {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90dvh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-royal-100">
           <h2 className="font-display font-bold text-royal-900">Bulk Import Members</h2>
           <button onClick={close} aria-label="Close"><X className="h-5 w-5" /></button>

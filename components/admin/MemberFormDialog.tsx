@@ -34,14 +34,14 @@ export function MemberFormDialog({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90dvh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-royal-100">
           <h2 className="font-display font-bold text-royal-900">Add Member</h2>
           <button onClick={close} aria-label="Close"><X className="h-5 w-5" /></button>
         </div>
         <form action={handleSubmit} className="p-5 space-y-4">
           <div><label className={labelClass}>Full Name *</label><input name="full_name" required className={inputClass} /></div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>Rank</label>
               <select name="rank_id" className={inputClass}>
@@ -57,7 +57,7 @@ export function MemberFormDialog({
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className={labelClass}>Phone</label><input name="phone" className={inputClass} /></div>
             <div><label className={labelClass}>Email</label><input name="email" type="email" className={inputClass} /></div>
           </div>

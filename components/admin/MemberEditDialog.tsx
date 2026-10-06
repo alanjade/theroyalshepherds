@@ -33,14 +33,14 @@ export function MemberEditDialog({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl2 shadow-card max-w-lg w-full max-h-[90dvh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-royal-100">
           <h2 className="font-display font-bold text-royal-900">Edit Profile</h2>
           <button onClick={() => router.push(back)} aria-label="Close"><X className="h-5 w-5" /></button>
         </div>
         <form action={handleSubmit} className="p-5 space-y-4">
           <div><label className={labelClass}>Full Name *</label><input name="full_name" required defaultValue={member.full_name} className={inputClass} /></div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>Rank</label>
               <select name="rank_id" defaultValue={v(member.rank_id)} className={inputClass}>
@@ -56,7 +56,7 @@ export function MemberEditDialog({
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>Status</label>
               <select name="status" defaultValue={member.status} className={inputClass}>
@@ -75,16 +75,16 @@ export function MemberEditDialog({
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className={labelClass}>Phone</label><input name="phone" defaultValue={v(member.phone)} className={inputClass} /></div>
             <div><label className={labelClass}>Email</label><input name="email" type="email" defaultValue={v(member.email)} className={inputClass} /></div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className={labelClass}>Date of Birth</label><input name="date_of_birth" type="date" defaultValue={v(member.date_of_birth)} className={inputClass} /></div>
             <div><label className={labelClass}>Occupation</label><input name="occupation" defaultValue={v(member.occupation)} className={inputClass} /></div>
           </div>
           <div><label className={labelClass}>Address</label><input name="address" defaultValue={v(member.address)} className={inputClass} /></div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className={labelClass}>Guardian Name</label><input name="guardian_name" defaultValue={v(member.guardian_name)} className={inputClass} /></div>
             <div><label className={labelClass}>Guardian Phone</label><input name="guardian_phone" defaultValue={v(member.guardian_phone)} className={inputClass} /></div>
           </div>

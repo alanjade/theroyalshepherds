@@ -3,34 +3,36 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
+import { hasRole, type Role } from "@/lib/auth/roles";
 import {
   LayoutDashboard, Users, Star, Shield, Building2, Calendar, Newspaper,
   Images, ClipboardList, FileText, Mail, Settings, History, KeyRound, X,
 } from "lucide-react";
 
 const NAV = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/members", label: "Members", icon: Users },
-  { href: "/admin/officers", label: "Officers", icon: Star },
-  { href: "/admin/ranks", label: "Ranks", icon: Shield },
-  { href: "/admin/units", label: "Units", icon: Building2 },
-  { href: "/admin/events", label: "Events", icon: Calendar },
-  { href: "/admin/news", label: "News", icon: Newspaper },
-  { href: "/admin/gallery", label: "Gallery", icon: Images },
-  { href: "/admin/applications", label: "Applications", icon: ClipboardList },
-  { href: "/admin/resources", label: "Resources", icon: FileText },
-  { href: "/admin/messages", label: "Messages", icon: Mail },
-  { href: "/admin/users", label: "Admin Access", icon: KeyRound },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
-  { href: "/admin/audit-logs", label: "Audit Logs", icon: History },
+  { minRole: "officer" as Role, href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { minRole: "admin" as Role, href: "/admin/members", label: "Members", icon: Users },
+  { minRole: "admin" as Role, href: "/admin/officers", label: "Officers", icon: Star },
+  { minRole: "admin" as Role, href: "/admin/ranks", label: "Ranks", icon: Shield },
+  { minRole: "admin" as Role, href: "/admin/units", label: "Units", icon: Building2 },
+  { minRole: "editor" as Role, href: "/admin/events", label: "Events", icon: Calendar },
+  { minRole: "editor" as Role, href: "/admin/news", label: "News", icon: Newspaper },
+  { minRole: "editor" as Role, href: "/admin/gallery", label: "Gallery", icon: Images },
+  { minRole: "admin" as Role, href: "/admin/applications", label: "Applications", icon: ClipboardList },
+  { minRole: "editor" as Role, href: "/admin/resources", label: "Resources", icon: FileText },
+  { minRole: "officer" as Role, href: "/admin/messages", label: "Messages", icon: Mail },
+  { minRole: "super_admin" as Role, href: "/admin/users", label: "Admin Access", icon: KeyRound },
+  { minRole: "admin" as Role, href: "/admin/settings", label: "Settings", icon: Settings },
+  { minRole: "admin" as Role, href: "/admin/audit-logs", label: "Audit Logs", icon: History },
 ];
 
-export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function AdminSidebar({ open, onClose, role }: { open: boolean; onClose: () => void; role: string }) {
   const pathname = usePathname();
+  const items = NAV.filter((item) => hasRole(role, item.minRole));
 
   const content = (
     <nav className="flex flex-col gap-1 p-4">
-      {NAV.map((item) => {
+      {items.map((item) => {
         const active = pathname === item.href || (item.href !== "/admin" && pathname?.startsWith(item.href));
         return (
           <Link key={item.href} href={item.href as any} onClick={onClose}

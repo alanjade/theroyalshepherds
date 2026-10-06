@@ -28,7 +28,7 @@ export function Lightbox({ photos }: { photos: Photo[] }) {
           {openIndex < photos.length - 1 && (
             <button onClick={() => setOpenIndex(openIndex + 1)} aria-label="Next" className="absolute right-4 text-white p-2"><ChevronRight /></button>
           )}
-          <div className="relative max-w-4xl max-h-[80vh] w-full aspect-[4/3]">
+          <div className="relative max-w-4xl max-h-[80dvh] w-full aspect-[4/3]">
             <Image src={photos[openIndex]!.src} alt={photos[openIndex]!.alt} fill className="object-contain" />
           </div>
           {photos[openIndex]!.caption && <p className="absolute bottom-6 text-white/80 text-sm">{photos[openIndex]!.caption}</p>}
