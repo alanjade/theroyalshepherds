@@ -40,6 +40,8 @@ export async function requireUser() {
 /** Requires the caller's role to be at least `minRole` in the hierarchy. Throws — callers should catch/render an unauthorized state. */
 export async function requireRole(minRole: Role) {
   const session = await requireUser();
+  // Accounts on a temporary password must set their own before doing anything else.
+  if (session.profile.must_change_password) redirect("/admin/change-password");
   const currentRole = session.profile.role as Role;
   if (ROLE_RANK[currentRole] < ROLE_RANK[minRole]) {
     throw new AuthorizationError(`Requires role >= ${minRole}`);

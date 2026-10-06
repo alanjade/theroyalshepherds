@@ -1,5 +1,6 @@
 import { requireUser, type Role } from "@/lib/auth";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { redirect } from "next/navigation";
 
 const ROLE_RANK: Record<Role, number> = { officer: 1, editor: 2, admin: 3, super_admin: 4 };
 
@@ -13,6 +14,7 @@ export async function RequireAdmin({
   minRole = "officer", children,
 }: { minRole?: Role; children: React.ReactNode }) {
   const { profile } = await requireUser();
+  if (profile.must_change_password) redirect("/admin/change-password");
 
   if (ROLE_RANK[profile.role as Role] < ROLE_RANK[minRole]) {
     return (

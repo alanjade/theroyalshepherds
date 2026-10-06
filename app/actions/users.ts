@@ -52,7 +52,7 @@ export async function grantAccess(formData: FormData): Promise<ActionResult> {
   }
 
   const { error: profileError } = await admin.from("profiles").insert({
-    id: created.user.id, full_name: member.full_name, email, role, member_id: memberId,
+    id: created.user.id, full_name: member.full_name, email, role, member_id: memberId, must_change_password: true,
   });
   if (profileError) {
     await admin.auth.admin.deleteUser(created.user.id); // don't leave a login with no profile
@@ -94,6 +94,7 @@ export async function resetAccessPassword(profileId: string, password: string): 
   if ("error" in t) return { success: false, error: t.error as string };
   const { error } = await t.admin.auth.admin.updateUserById(profileId, { password });
   if (error) return { success: false, error: "Could not reset the password." };
+  await t.admin.from("profiles").update({ must_change_password: true }).eq("id", profileId);
   await logAudit("access_password_reset", "profiles", profileId);
   return { success: true };
 }

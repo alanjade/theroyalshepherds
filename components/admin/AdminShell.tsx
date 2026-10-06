@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, LogOut } from "lucide-react";
+import Link from "next/link";
+import { Menu, LogOut, KeyRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AdminSidebar } from "./AdminSidebar";
@@ -36,6 +37,9 @@ export function AdminShell({
                 <p className="text-sm font-semibold text-royal-900">{userName}</p>
                 <p className="text-xs text-charcoal/50 capitalize">{role.replace("_", " ")}</p>
               </div>
+              <Link href="/admin/change-password" aria-label="Change password" title="Change password" className="p-2 rounded-lg hover:bg-royal-50 text-charcoal/70">
+                <KeyRound className="h-4 w-4" />
+              </Link>
               <button onClick={handleLogout} aria-label="Log out" className="p-2 rounded-lg hover:bg-royal-50 text-charcoal/70">
                 <LogOut className="h-4 w-4" />
               </button>

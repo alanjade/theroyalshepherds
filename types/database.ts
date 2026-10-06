@@ -18,7 +18,7 @@ export interface Database {
       profiles: {
         Row: {
           id: string; full_name: string; email: string; avatar_url: string | null;
-          role: Role; member_id: string | null; created_at: string; updated_at: string;
+          role: Role; member_id: string | null; must_change_password: boolean; created_at: string; updated_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & { id: string; full_name: string; email: string };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;

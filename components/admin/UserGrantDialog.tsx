@@ -85,7 +85,7 @@ export function UserGrantDialog({
                   onChange={(e) => setPassword(e.target.value)} className={inputClass + " font-mono"} />
                 <Button type="button" variant="outline" size="sm" onClick={() => setPassword(generatePassword())}>Generate</Button>
               </div>
-              <p className="text-xs text-charcoal/50 mt-1">At least 8 characters. Ask the member to change it after signing in.</p>
+              <p className="text-xs text-charcoal/50 mt-1">At least 8 characters. The member will be asked to choose their own password the first time they sign in.</p>
             </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
