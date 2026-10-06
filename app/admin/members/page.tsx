@@ -58,9 +58,9 @@ export default async function AdminMembersPage({
           </div>
         </div>
 
-        <form className="flex flex-wrap gap-3" action="/admin/members">
+        <form className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3" action="/admin/members">
           <input name="search" defaultValue={search} placeholder="Search by name…"
-            className="rounded-lg border border-royal-200 px-3 py-2 text-sm w-64" />
+            className="col-span-2 rounded-lg border border-royal-200 px-3 py-2 text-sm w-full sm:w-64" />
           <select name="status" defaultValue={sp.status ?? ""} className="rounded-lg border border-royal-200 px-3 py-2 text-sm">
             <option value="">All Statuses</option>
             <option value="active">Active</option>
