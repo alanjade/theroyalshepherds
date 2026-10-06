@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { formatDate } from "@/lib/utils/dates";
 import {
-  Users, UserCheck, ClipboardList, Calendar, Newspaper, Images, Mail,
+  Users, UserCheck, ClipboardList, PackageOpen, Calendar, Newspaper, Images, Mail,
   UserPlus, CalendarPlus, FilePlus, Upload, ClipboardCheck,
 } from "lucide-react";
 
@@ -29,7 +29,7 @@ export default async function AdminDashboardPage() {
   const [
     { count: totalMembers }, { count: activeMembers }, { count: pendingApps },
     { count: upcomingEvents }, { count: publishedNews }, { count: photos },
-    { count: unreadMessages }, { data: recentApps }, { data: recentEvents }, { data: recentMessages },
+    { count: unreadMessages }, { count: assetsOut }, { data: recentApps }, { data: recentEvents }, { data: recentMessages },
   ] = await Promise.all([
     isAdmin ? supabase.from("members").select("id", head) : none,
     isAdmin ? supabase.from("members").select("id", head).eq("status", "active") : none,
@@ -38,6 +38,7 @@ export default async function AdminDashboardPage() {
     isEditor ? supabase.from("news").select("id", head).eq("status", "published") : none,
     isEditor ? supabase.from("gallery_photos").select("id", head) : none,
     isOfficer ? supabase.from("contact_messages").select("id", head).eq("is_read", false) : none,
+    isOfficer ? supabase.from("asset_checkouts").select("id", head).is("checked_in_at", null) : none,
     isAdmin ? supabase.from("membership_applications").select("*").order("created_at", { ascending: false }).limit(5) : none,
     isEditor ? supabase.from("events").select("*").order("start_date", { ascending: false }).limit(5) : none,
     isOfficer ? supabase.from("contact_messages").select("*").order("created_at", { ascending: false }).limit(5) : none,
@@ -58,6 +59,7 @@ export default async function AdminDashboardPage() {
           {isEditor && <StatCard label="Upcoming Events" value={upcomingEvents ?? 0} icon={Calendar} href="/admin/events" />}
           {isEditor && <StatCard label="Published News" value={publishedNews ?? 0} icon={Newspaper} href="/admin/news" />}
           {isEditor && <StatCard label="Gallery Photos" value={photos ?? 0} icon={Images} href="/admin/gallery" />}
+          {isOfficer && <StatCard label="Open Asset Loans" value={assetsOut ?? 0} icon={PackageOpen} href="/admin/assets?status=checked_out" />}
           {isOfficer && <StatCard label="Unread Messages" value={unreadMessages ?? 0} icon={Mail} href="/admin/messages" />}
         </div>
 

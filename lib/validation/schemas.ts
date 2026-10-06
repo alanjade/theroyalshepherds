@@ -75,3 +75,39 @@ export const memberSchema = z.object({
   guardian_phone: z.string().max(30).optional().or(z.literal("")),
   emergency_contact: z.string().max(200).optional().or(z.literal("")),
 });
+
+export const ASSET_CONDITIONS = ["new", "good", "fair", "poor"] as const;
+
+const qty = (min: number) => z.coerce.number().int("Enter a whole number.").min(min).max(100000);
+
+export const assetSchema = z.object({
+  name: z.string().min(2, "Enter the asset name.").max(150),
+  tracking: z.enum(["individual", "bulk"]),
+  quantity: qty(1).default(1),
+  asset_tag: z.string().max(40).optional().or(z.literal("")),
+  category: z.string().max(80).optional().or(z.literal("")),
+  serial_number: z.string().max(80).optional().or(z.literal("")),
+  location: z.string().max(120).optional().or(z.literal("")),
+  description: z.string().max(2000).optional().or(z.literal("")),
+  condition: z.enum(ASSET_CONDITIONS),
+});
+
+export const checkoutSchema = z.object({
+  asset_id: z.string().uuid(),
+  quantity: qty(1).default(1),
+  member_id: z.string().uuid().optional().or(z.literal("")),
+  borrower_name: z.string().max(120).optional().or(z.literal("")),
+  due_date: z.string().optional().or(z.literal("")),
+  condition_out: z.enum(ASSET_CONDITIONS),
+  notes_out: z.string().max(1000).optional().or(z.literal("")),
+});
+
+export const checkinSchema = z.object({
+  asset_id: z.string().uuid(),
+  checkout_id: z.string().uuid(),
+  quantity: qty(1).default(1),
+  written_off: qty(0).default(0),
+  condition_in: z.enum(ASSET_CONDITIONS),
+  notes_in: z.string().max(1000).optional().or(z.literal("")),
+  needs_maintenance: z.boolean(),
+});
